@@ -1,13 +1,19 @@
 cmake_minimum_required(VERSION 3.12)
-project(pg_service_template CXX)
-
+project(soc_net_aut C CXX)
 include(third_party/userver/cmake/SetupEnvironment.cmake)
 include(GNUInstallDirs)
-
+find_package(OpenSSL REQUIRED)
 add_subdirectory(third_party/userver)
 
 
 # Common sources
+add_library(${PROJECT_NAME}_jwtTok OBJECT
+    src/jwt.hpp
+    src/jwt.cpp
+    )
+target_include_directories(${PROJECT_NAME}_jwtTok PUBLIC ${OpenSSL_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}_jwtTok PUBLIC userver-core ${OpenSSL_LIBRARIES})
+
 add_library(${PROJECT_NAME}_objs OBJECT
     src/hello.hpp
     src/hello.cpp
@@ -24,7 +30,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 add_executable(${PROJECT_NAME}_unittest
     src/hello_test.cpp
 )
-target_link_libraries(${PROJECT_NAME}_unittest PRIVATE ${PROJECT_NAME}_objs userver-utest)
+target_link_libraries(${PROJECT_NAME}_unittest PRIVATE ${PROJECT_NAME}_objs ${PROJECT_NAME}_jwtTok userver-utest)
 add_google_tests(${PROJECT_NAME}_unittest)
 
 

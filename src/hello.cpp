@@ -1,14 +1,12 @@
 #include "hello.hpp"
-
 #include <fmt/format.h>
-
 #include <userver/clients/dns/component.hpp>
 #include <userver/server/handlers/http_handler_base.hpp>
 #include <userver/storages/postgres/cluster.hpp>
 #include <userver/storages/postgres/component.hpp>
 #include <userver/utils/assert.hpp>
 
-namespace pg_service_template {
+namespace soc_net_aut {
 
 namespace {
 
@@ -44,7 +42,7 @@ class Hello final : public userver::server::handlers::HttpHandlerBase {
       }
     }
 
-    return pg_service_template::SayHelloTo(name, user_type);
+    return soc_net_aut::SayHelloTo(name, user_type);
   }
 
   userver::storages::postgres::ClusterPtr pg_cluster_;
@@ -73,4 +71,4 @@ void AppendHello(userver::components::ComponentList& component_list) {
   component_list.Append<userver::clients::dns::Component>();
 }
 
-}  // namespace pg_service_template
+}  // namespace soc_net_aut

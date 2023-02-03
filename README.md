@@ -1,4 +1,4 @@
-# pg_service_template
+# soc_net_aut
 
 Template of a C++ service that uses [userver framework](https://github.com/userver-framework/userver) with PostgreSQL.
 
@@ -9,8 +9,8 @@ To create your own userver-based service follow the following steps:
 
 1. Press the green "Use this template button" at the top of this github page
 2. Clone the service `git clone your-service-repo && cd your-service-repo`
-3. Give a propper name to your service and replace all the occurences of "pg_service_template" string with that name
-   (could be done via `find . -not -path "./third_party/*" -not -path ".git/*" -not -path './build_*' -type f | xargs sed -i 's/pg_service_template/YOUR_SERVICE_NAME/g'`).
+3. Give a propper name to your service and replace all the occurences of "soc_net_aut" string with that name
+   (could be done via `find . -not -path "./third_party/*" -not -path ".git/*" -not -path './build_*' -type f | xargs sed -i 's/soc_net_aut/YOUR_SERVICE_NAME/g'`).
 4. Feel free to tweak, adjust or fully rewrite the source code of your service.
 
 
@@ -39,7 +39,8 @@ Makefile contains typicaly useful targets for development:
 
 Edit `Makefile.local` to change the default configuration and build options.
 
-
+## JWT using
+* transaction isolation mode mast be repeatable read or higher on pgsql
 ## License
 
 The original template is distributed under the [Apache-2.0 License](https://github.com/userver-framework/userver/blob/develop/LICENSE)
