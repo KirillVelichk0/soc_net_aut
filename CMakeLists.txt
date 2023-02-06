@@ -7,12 +7,21 @@ add_subdirectory(third_party/userver)
 
 
 # Common sources
+add_library(${PROJECT_NAME}_crypto OBJECT
+    src/cryptCore.hpp
+    src/cryptCore.cpp
+)
+target_include_directories(${PROJECT_NAME}_crypto PUBLIC ${OpenSSL_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}_crypto PUBLIC ${OpenSSL_LIBRARIES})
+
+
 add_library(${PROJECT_NAME}_jwtTok OBJECT
     src/jwt.hpp
     src/jwt.cpp
     )
-target_include_directories(${PROJECT_NAME}_jwtTok PUBLIC ${OpenSSL_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME}_jwtTok PUBLIC userver-core ${OpenSSL_LIBRARIES})
+target_include_directories(${PROJECT_NAME}_jwtTok PRIVATE ${OpenSSL_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}_jwtTok PRIVATE ${OpenSSL_LIBRARIES} ${PROJECT_NAME}_crypto)
+target_link_libraries(${PROJECT_NAME}_jwtTok PUBLIC userver-core)
 
 add_library(${PROJECT_NAME}_objs OBJECT
     src/hello.hpp
@@ -30,7 +39,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 add_executable(${PROJECT_NAME}_unittest
     src/hello_test.cpp
 )
-target_link_libraries(${PROJECT_NAME}_unittest PRIVATE ${PROJECT_NAME}_objs ${PROJECT_NAME}_jwtTok userver-utest)
+target_link_libraries(${PROJECT_NAME}_unittest PRIVATE ${PROJECT_NAME}_objs ${PROJECT_NAME}_crypto ${PROJECT_NAME}_jwtTok userver-utest)
 add_google_tests(${PROJECT_NAME}_unittest)
 
 

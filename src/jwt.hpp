@@ -24,7 +24,7 @@ public:
     static std::string CreateToken(Callable&& registrator, std::uint64_t userId){
     std::string priv;
     JInt outPublicKey;
-    std::int64_t t_c = std::chrono::duration_cast<std::chrono::seconds>((std::chrono::system_clock::now() + std::chrono::hours(720)).time_since_epoch()).count();
+    std::int64_t t_c = std::chrono::duration_cast<std::chrono::seconds>((std::chrono::system_clock::now() + std::chrono::hours(JWT_Token_Master::GoodHoursCount)).time_since_epoch()).count();
     JWT_Token_Master::GenerateRsaKey(outPublicKey, priv);
     std::int64_t tokenId = registrator(userId, outPublicKey, t_c);
     auto signer = userver::crypto::SignerRs256(priv);
@@ -74,7 +74,7 @@ public:
         if(c_p > tokenDate){
             return JWT_Token_Master::GWTStates::BadOld;
         }
-        else if(c_p > tokenDate - 360 * 3600){ //someMagicDates
+        else if(c_p > tokenDate - JWT_Token_Master::LimForNewGenInSeconds){ 
             return JWT_Token_Master::GWTStates::GoodOld;
         }
         return JWT_Token_Master::GWTStates::Ok;
