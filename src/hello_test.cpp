@@ -10,6 +10,14 @@
 #include <tuple>
 #include <openssl/pem.h>
 using namespace std::string_literals;
+UTEST(CryptCoreTest, SCryptTest){
+  using MyMicro::CryptMaster;
+  std::string password = "qwert1234567890";
+  std::string salt = "qasd1e4hjlkQQ!@#juifdsjbnnvjqwerdaf";
+  auto result = CryptMaster::SCryptHash(password, salt);
+  bool isOk = result.has_value();
+  EXPECT_TRUE(isOk);
+}
 UTEST(CryptCoreTests, RSATest){
   std::string open; std::string close;
   using MyMicro::JWT_Token_Master;

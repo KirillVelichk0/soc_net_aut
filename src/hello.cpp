@@ -5,7 +5,6 @@
 #include <userver/storages/postgres/cluster.hpp>
 #include <userver/storages/postgres/component.hpp>
 #include <userver/utils/assert.hpp>
-
 namespace soc_net_aut {
 
 namespace {

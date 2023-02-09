@@ -1,20 +1,21 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.13)
 project(soc_net_aut C CXX)
 include(third_party/userver/cmake/SetupEnvironment.cmake)
 include(GNUInstallDirs)
 find_package(OpenSSL REQUIRED)
 add_subdirectory(third_party/userver)
-
-
+set(scrL "third_party/libScrypt")
 # Common sources
 add_library(${PROJECT_NAME}_crypto OBJECT
     src/cryptCore.hpp
     src/cryptCore.cpp
 )
+target_include_directories(${PROJECT_NAME}_crypto PRIVATE ${scrL})
+add_library( libScrypt SHARED IMPORTED )
+set_target_properties( libScrypt PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/third_party/libScrypt/libscrypt.so.0)
+target_link_libraries(${PROJECT_NAME}_crypto PRIVATE libScrypt)
 target_include_directories(${PROJECT_NAME}_crypto PUBLIC ${OpenSSL_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME}_crypto PUBLIC ${OpenSSL_LIBRARIES})
-
-
 add_library(${PROJECT_NAME}_jwtTok OBJECT
     src/jwt.hpp
     src/jwt.cpp

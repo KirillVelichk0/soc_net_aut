@@ -1,6 +1,8 @@
 #include "cryptCore.hpp"
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
+#include <optional>
+#include <libscrypt.h>
 namespace MyMicro{
     void CryptMaster::GenerateRsaKey(std::string & out_pub_key, std::string & out_pri_key) noexcept {
         size_t pri_len = 0; // Private key length
@@ -38,7 +40,7 @@ namespace MyMicro{
         out_pub_key = pub_key;
         out_pri_key = pri_key;
 
-
+     
          // release memory
         RSA_free(keypair);
         BIO_free_all(pub);
@@ -46,5 +48,21 @@ namespace MyMicro{
 
         free(pri_key);
         free(pub_key);
+    }
+std::optional<std::string> CryptMaster::SCryptHashCore(const char* password,std::size_t pLen, const char* salt, std::size_t sLen) noexcept{
+          constexpr std::size_t bufLen = 32;
+          char buf[bufLen];
+          std::optional<std::string> result;
+          
+          auto op_result = libscrypt_scrypt(reinterpret_cast<const uint8_t*>(password), pLen,
+          reinterpret_cast<const uint8_t*>(salt), sLen, 4096, 8, 1, 
+          reinterpret_cast<uint8_t*>(buf), bufLen);
+          if(op_result == 0){
+               result = std::string(buf, bufLen);
+          }
+          return result;
+}
+std::optional<std::string> CryptMaster::SCryptHash(const std::string& password, const std::string& salt) noexcept{
+          return CryptMaster::SCryptHashCore(password.c_str(), password.size(), salt.c_str(), salt.size());
     }
 }

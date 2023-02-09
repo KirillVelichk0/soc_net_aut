@@ -4,6 +4,7 @@
 #include <tuple>
 #include <userver/crypto/crypto.hpp>
 #include <userver/formats/json.hpp>
+#include "cryptCore.hpp"
 using namespace std::string_literals;
 namespace MyMicro {
 using JInt = std::string;
@@ -15,7 +16,6 @@ private:
 public:
 
     enum class GWTStates {Ok, DontEq, BadOld, GoodOld};
-    static void GenerateRsaKey(std::string & out_pub_key, std::string & out_pri_key);
     //Callable принимает триплет (int64 user id, string openKey, int64 unixT), регистрирует 
     //открытые данные в бд
     //и возвращает id токена в базе данных
@@ -25,7 +25,7 @@ public:
     std::string priv;
     JInt outPublicKey;
     std::int64_t t_c = std::chrono::duration_cast<std::chrono::seconds>((std::chrono::system_clock::now() + std::chrono::hours(JWT_Token_Master::GoodHoursCount)).time_since_epoch()).count();
-    JWT_Token_Master::GenerateRsaKey(outPublicKey, priv);
+    CryptMaster::GenerateRsaKey(outPublicKey, priv);
     std::int64_t tokenId = registrator(userId, outPublicKey, t_c);
     auto signer = userver::crypto::SignerRs256(priv);
     userver::formats::json::ValueBuilder builderH;
