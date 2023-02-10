@@ -9,5 +9,4 @@ compile_commands.json
 .cores/
 cmake-build-*
 Testing/
-*third_party*
 configs/static_config.yaml

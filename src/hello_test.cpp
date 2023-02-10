@@ -1,5 +1,7 @@
 #include "hello.hpp"
 #include "jwt.hpp"
+#include <random>
+#include <openssl/rand.h>
 #include "cryptCore.hpp"
 #include <userver/utest/utest.hpp>
 #include <userver/formats/json.hpp>
@@ -9,6 +11,7 @@
 #include <chrono>
 #include <tuple>
 #include <openssl/pem.h>
+#include <array>
 using namespace std::string_literals;
 UTEST(CryptCoreTest, SCryptTest){
   using MyMicro::CryptMaster;
@@ -17,8 +20,35 @@ UTEST(CryptCoreTest, SCryptTest){
   auto result = CryptMaster::SCryptHash(password, salt);
   bool isOk = result.has_value();
   EXPECT_TRUE(isOk);
+  std::array<char, 5> saltAr = {'H', 'E', 'L', 'L', 'O'};
+  result = CryptMaster::SCryptHash(password, saltAr);
+  isOk = result.has_value();
+  EXPECT_TRUE(isOk);
 }
-UTEST(CryptCoreTests, RSATest){
+UTEST(CryptCoreTest, RandBytesGeneratingTest){
+  using MyMicro::CryptMaster;
+  for(std::size_t i = 0; i < 100; i++){
+    auto arrayB = CryptMaster::GenerateRandomArray<32>();
+    bool isOk = arrayB.has_value();
+    EXPECT_TRUE(isOk);
+    auto vectorB = CryptMaster::GenerateRandomVector(32);
+    isOk = vectorB.has_value();
+    EXPECT_TRUE(isOk);
+    auto stringB = CryptMaster::GenerateRandomString(32);
+    isOk = stringB.has_value();
+    EXPECT_TRUE(isOk);
+  }
+}
+UTEST(CryptCoreTest, SCryptFuzzTest){
+  using MyMicro::CryptMaster;
+  for(std::size_t i = 0; i < 1000; i++){
+    std::string password(32, '0'); std::string salt(32, '0');
+    RAND_bytes(reinterpret_cast<unsigned char*>(password.data()), 32);
+    RAND_bytes(reinterpret_cast<unsigned char*>(salt.data()), 32);
+    EXPECT_TRUE(CryptMaster::SCryptHash(password, salt).has_value());
+  }
+}
+UTEST(CryptCore_UserverCrypt_Integr_Tests, RSA_Sign_Ver_Test){
   std::string open; std::string close;
   using MyMicro::JWT_Token_Master;
   MyMicro::CryptMaster::GenerateRsaKey(open, close);
