@@ -23,7 +23,12 @@ add_library(${PROJECT_NAME}_jwtTok OBJECT
 target_include_directories(${PROJECT_NAME}_jwtTok PRIVATE ${OpenSSL_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME}_jwtTok PRIVATE ${OpenSSL_LIBRARIES} ${PROJECT_NAME}_crypto)
 target_link_libraries(${PROJECT_NAME}_jwtTok PUBLIC userver-core)
-
+add_library(${PROJECT_NAME}_pgAuth OBJECT
+    src/pgAuth.hpp
+    src/pgAuth.cpp
+)
+target_link_libraries(${PROJECT_NAME}_pgAuth PRIVATE ${PROJECT_NAME}_crypto ${PROJECT_NAME}_jwtTok)
+target_link_libraries(${PROJECT_NAME}_pgAuth PUBLIC userver-core userver-postgresql )
 add_library(${PROJECT_NAME}_objs OBJECT
     src/hello.hpp
     src/hello.cpp

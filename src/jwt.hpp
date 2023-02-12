@@ -24,7 +24,7 @@ class JWT_Token_Master {
   // токен однозначно идентифицирует владельца, содержа данные о нем и его
   // цифровую подпись
   template <class Callable>
-  static std::string CreateToken(Callable&& registrator, std::uint64_t userId) {
+  static std::string CreateToken(Callable&& registrator, std::int64_t userId) {
     try {
       std::string priv;
       JInt outPublicKey;
@@ -85,7 +85,7 @@ class JWT_Token_Master {
       verifier.Verify({encodedH, encodedP}, sSign);
 
       if (jPayload["sub"s].As<std::string>() != "authToken") {
-        // throw userver::crypto::VerificationError();
+         throw userver::crypto::VerificationError();
       }
       std::int64_t tokenDate = jPayload["exp"s].As<std::int64_t>();
       std::int64_t c_p =
