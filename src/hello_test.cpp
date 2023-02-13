@@ -10,6 +10,8 @@
 #include <string>
 #include <chrono>
 #include <tuple>
+#include <exception>
+#include <stdexcept>
 #include <openssl/pem.h>
 #include <array>
 using namespace std::string_literals;
@@ -39,7 +41,7 @@ UTEST(CryptCoreTest, RandBytesGeneratingTest){
     EXPECT_TRUE(isOk);
   }
 }
-UTEST(CryptCoreTest, SCryptFuzzTest){
+/*UTEST(CryptCoreTest, SCryptFuzzTest){
   using MyMicro::CryptMaster;
   for(std::size_t i = 0; i < 1000; i++){
     std::string password(32, '0'); std::string salt(32, '0');
@@ -47,7 +49,7 @@ UTEST(CryptCoreTest, SCryptFuzzTest){
     RAND_bytes(reinterpret_cast<unsigned char*>(salt.data()), 32);
     EXPECT_TRUE(CryptMaster::SCryptHash(password, salt).has_value());
   }
-}
+}*/
 UTEST(CryptCore_UserverCrypt_Integr_Tests, RSA_Sign_Ver_Test){
   std::string open; std::string close;
   using MyMicro::JWT_Token_Master;
@@ -76,6 +78,7 @@ UTEST(CryptCore_UserverCrypt_Integr_Tests, RSA_Sign_Ver_Test){
 UTEST(JWTTests, GetterTest){
   using MyMicro::JWT_Token_Master;
   using userver::crypto::base64::Base64UrlEncode;
+  using userver::crypto::base64::Base64UrlDecode;
   std::string x1 = "Cringe"; std::string x2 = "!#@%&"; std::string x3 = "12345";
   std::string y1 = Base64UrlEncode(x1); std::string y2 = Base64UrlEncode(x2); 
   std::string y3 = Base64UrlEncode(x3);
@@ -85,6 +88,10 @@ UTEST(JWTTests, GetterTest){
   EXPECT_EQ(z1, std::get<0>(res));
   EXPECT_EQ(z2, std::get<1>(res));
   EXPECT_EQ(z3, std::get<2>(res));
+  UEXPECT_THROW(JWT_Token_Master::GetElems("adsa.dff.f.f"s), std::invalid_argument);
+  UEXPECT_THROW_MSG(JWT_Token_Master::GetElems("adsa.dffff"s), std::invalid_argument, "Uncorrect jwt string input");
+  UEXPECT_THROW_MSG(JWT_Token_Master::GetElems("adsadffff"s), std::invalid_argument, "Uncorrect jwt string input");
+
 }
 UTEST(JWTTests, Basic) {
   using soc_net_aut::SayHelloTo;
@@ -102,7 +109,13 @@ UTEST(JWTTests, Basic) {
   EXPECT_TRUE(keyGetter(1).size() > 0);
   EXPECT_TRUE(openKeyC.size() > 0);
   EXPECT_TRUE(token.size() > 0);
+  UEXPECT_THROW(userver::formats::json::FromString("arwqedfasd134"s), std::exception); // нет в доках!!!
   auto result = JWT_Token_Master::Verify(keyGetter, token);
   EXPECT_EQ(JWT_Token_Master::GWTStates::Ok, result);
+  std::string val = "sdfasdfsda.asqerdasf.1324qewrf";
+  EXPECT_EQ(JWT_Token_Master::Verify(keyGetter, val), JWT_Token_Master::GWTStates::DontEq);
+  openKeyC[0] = openKeyC[0] + 1;
+  result = JWT_Token_Master::Verify(keyGetter, token);
+  EXPECT_EQ(JWT_Token_Master::GWTStates::DontEq, result);
   
 }

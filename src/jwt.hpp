@@ -3,6 +3,7 @@
 #include <exception>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <userver/crypto/crypto.hpp>
 #include <userver/formats/json.hpp>
@@ -59,7 +60,7 @@ class JWT_Token_Master {
       throw ex;
     }
   }
-  static std::tuple<std::string, std::string, std::string> GetElems(const std::string& jwt);
+  static std::tuple<std::string, std::string, std::string> GetElems(std::string_view jwt);
   // в моем проекте предполагается использование только Rs256, поэтому поле
   // алгоритма даже не осматривается Callable принимает id токена и возвращает
   // открытый ключ. Если он пуст, значит такого токена нет
@@ -70,7 +71,6 @@ class JWT_Token_Master {
       std::string sHeader = std::get<0>(parsedJWT);
       std::string sPayload = std::get<1>(parsedJWT);
       std::string sSign = std::get<2>(parsedJWT);
-
       auto jPayload = userver::formats::json::FromString(sPayload);
       auto tokenId = jPayload["tokenId"s].As<std::int64_t>();
       JInt openKey = openKeyGetter(tokenId);
@@ -99,10 +99,16 @@ class JWT_Token_Master {
       }
       return JWT_Token_Master::GWTStates::Ok;
     } catch (userver::crypto::VerificationError& _) {
+      return JWT_Token_Master::GWTStates::DontEq; // не прошло проверку
+    } catch(std::invalid_argument& _){
+      return JWT_Token_Master::GWTStates::DontEq; //не удалось распарсить base64Url
+    } catch(userver::formats::json::TypeMismatchException& mEx){
+      return JWT_Token_Master::GWTStates::DontEq; //не удалось прочитать json
+    } 
+    catch (std::exception& ex) {
       return JWT_Token_Master::GWTStates::DontEq;
-    } catch (std::exception& ex) {
-      throw ex;
-    }
+    } //этот кошмар с исключениями связан с корявыми доками *ндекса. Можно оставить только 
+    //std::exception, но, мало ли, вдруг логировать че буду
   }
 };
 }  // namespace MyMicro
