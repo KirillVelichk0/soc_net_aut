@@ -1,5 +1,5 @@
 #pragma once
-
+#include <string_view>
 #include <vector>
 #include <array>
 #include <cwchar>
@@ -12,6 +12,8 @@ namespace MyMicro{
             static std::optional<std::string> SCryptHashCore(const char* password,
             std::size_t pLen, const char* salt, std::size_t sLen) noexcept;
         public:
+            static std::string Base64UrlEndoce(std::string_view data);
+            static std::string CryptMaster::Base64UrlDecodeWithCheck(std::string_view input);
             static std::optional<std::vector<char>> GenerateRandomVector(std::size_t size) noexcept;
             static std::optional<std::string> GenerateRandomString(std::size_t size) noexcept;
             template <std::size_t N>

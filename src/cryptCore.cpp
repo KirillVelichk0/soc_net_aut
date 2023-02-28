@@ -2,8 +2,30 @@
 #include <libscrypt.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
+#include <userver/crypto/crypto.hpp>
 #include <openssl/rsa.h>
+#include <exception>
+#include <algorithm>
 namespace MyMicro {
+std::string CryptMaster::Base64UrlEndoce(std::string_view data){
+    return userver::crypto::base64::Base64UrlEncode(data);
+}
+std::string CryptMaster::Base64UrlDecodeWithCheck(std::string_view input){
+  auto CorrectSymbol = [](auto symb){
+    return (symb >= 'A' && symb <= 'Z') || (symb >= 'a' && symb <= 'z') || (symb >= '0' && symb <= '9')
+    || (symb == '_') || (symb == '-');
+  };
+  if(input.size() > 1000){
+    throw std::invalid_argument("Uncorrect Base64Url size");
+  }
+  auto it = std::find_if_not(input.cbegin(), input.cend(), CorrectSymbol);
+  if(it == input.cend() || *it == '='){
+    return userver::crypto::base64::Base64UrlDecode(input);
+  }
+  else{
+    throw std::invalid_argument("Uncorrect symbols at "s + std::string(input));
+  }
+}
 bool CryptMaster::GenerateRsaKey(std::string& out_pub_key,
                                  std::string& out_pri_key) noexcept {
   size_t pri_len = 0;       // Private key length
