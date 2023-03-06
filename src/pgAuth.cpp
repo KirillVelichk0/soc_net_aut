@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <cstdint>
-#include <algoritm>
+#include <algorithm>
 #include <memory>
 #include <optional>
 #include <cstdio>
@@ -31,11 +31,11 @@ std::string PgAuthMaster::CreateTokenFromID(
         uPGN::Query::Name{"tokenRegistator"},
     };
     auto transRes =
-        transactionR.execute(tokenRegistrateQuery, uid, publicKey, t_c);
+        transactionR.Execute(tokenRegistrateQuery, uid, publicKey, t_c);
     transactionR.Commit();
     return transRes.AsSingleRow<std::int64_t>();
   };
-  return MyMicro::JWT_Token_Master::CreateToken(regitsrator, uid);
+  return MyMicro::JWT_Token_Master::CreateToken(registrator, uid);
 }
 std::tuple<std::int64_t, std::string> PgAuthMaster::VerifyToken(
     userver::storages::postgres::ClusterPtr cluster, const std::string& jwt) {
@@ -48,7 +48,7 @@ std::tuple<std::int64_t, std::string> PgAuthMaster::VerifyToken(
         "where tid = $1",
         uPGN::Query::Name{"tokenDataGetter"},
     };
-    auto transRes = transactionR.execute(tokenGetterQuery, token_id);
+    auto transRes = transactionR.Execute(tokenGetterQuery, token_id);
     transactionR.Commit();
     if (!transRes.IsEmpty()) {
       auto row = transRes[0];  // there is single row
@@ -74,11 +74,11 @@ std::tuple<std::int64_t, std::string> PgAuthMaster::VerifyToken(
 }
 std::string PgAuthMaster::TryRegistrate(userver::storages::postgres::ClusterPtr cluster, const std::string& email, const std::string& password){
     auto salt = MyMicro::CryptMaster::GenerateRandomArray<32>();
-    auto saltedPass = MyMicro::CryptMaster::SCryptHash(password, salt);
+    auto saltedPass = MyMicro::CryptMaster::SCryptHash(password, salt.value());
     auto verifP = MyMicro::CryptMaster::GenerateRandomArray<32>();
     auto arrayToStringConverter = [](const auto& arrayCont){
         std::string result;
-        std::copy(arrayCont.cbegin(), arrayCont.cend(), std::back_inserter(result));
+        std::copy(arrayCont.value().cbegin(), arrayCont.value().cend(), std::back_inserter(result));
         return result;
     };
     namespace uPGN = userver::storages::postgres;
@@ -89,7 +89,7 @@ std::string PgAuthMaster::TryRegistrate(userver::storages::postgres::ClusterPtr 
     };
     auto saltS = arrayToStringConverter(salt); 
     auto verifPS = arrayToStringConverter(verifP);
-    auto transRes = transactionR.execute(registratorQuery, email, saltedPass.value(), saltS, verifPS);
+    auto transRes = transactionR.Execute(registratorQuery, email, saltedPass.value(), saltS, verifPS);
     transactionR.Commit();
     if (!transRes.IsEmpty()) {
       auto row = transRes[0];  // there is single row

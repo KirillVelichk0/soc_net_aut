@@ -6,6 +6,7 @@
 #include <openssl/rsa.h>
 #include <exception>
 #include <algorithm>
+using namespace std::string_literals;
 namespace MyMicro {
 std::string CryptMaster::Base64UrlEndoce(std::string_view data){
     return userver::crypto::base64::Base64UrlEncode(data);
