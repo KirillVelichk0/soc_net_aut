@@ -1,3 +1,6 @@
 [submodule "third_party/userver"]
 	path = third_party/userver
 	url = https://github.com/userver-framework/userver.git
+[submodule "Soc_net_services"]
+	path = Soc_net_services
+	url = git@github.com:KirillVelichk0/Soc_net_services.git
