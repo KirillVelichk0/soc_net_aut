@@ -96,7 +96,7 @@ std::string PgAuthMaster::TryRegistrate(
                                        saltedPass.value(), saltS, verifPS);
   transactionR.Commit();
   if (!transRes.IsEmpty()) {
-    auto regData = std::to_string(transactionR.AsSingleRow<std::int64_t>());
+    auto regData = std::to_string(transRes.AsSingleRow<std::int64_t>());
     regData += "."s + CryptMaster::Base64UrlEndoce(verifPS);
     return regData;
 
@@ -150,13 +150,16 @@ std::string PgAuthMaster::VerifyRegistration(
     const std::string_view reg_token) {
   std::int64_t u_id;
   std::string randomTokenData;
-  auto it = std::find(randomTokenData.cbegin(), randomTokenData.cend(), '.');
+  auto it = std::find(reg_token.cbegin(), reg_token.cend(), '.');
   try {
-    if (it == randomTokenData.cend()) {
+    if (it == reg_token.cend()) {
       throw std::invalid_argument("Uncorrect token");
     }
+    auto to_view_my = [](std::string_view::const_iterator first, std::string_view::const_iterator last) -> std::string_view{
+      return first != last ? std::string_view{ first, last - first } : std::string_view{ nullptr, 0 };
+    };
     randomTokenData = CryptMaster::Base64UrlDecodeWithCheck(
-        std::string_view(it, randomTokenData.cend()));
+        to_view_my(it, reg_token.cend()));
     namespace uPGN = userver::storages::postgres;
     auto transactionR = CreateTransactionRpRead(cluster);
     const uPGN::Query verifingQuery{
@@ -167,7 +170,7 @@ std::string PgAuthMaster::VerifyRegistration(
     transactionR.Commit();
     if (!transRes.IsEmpty()) { 
       //single row
-      return transactionR.AsSingleRow<std::string>();
+      return transRes.AsSingleRow<std::string>();
     }
     else{
       return "Uncorrect registration data";
