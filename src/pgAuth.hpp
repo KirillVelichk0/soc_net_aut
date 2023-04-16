@@ -12,6 +12,7 @@ namespace MyMicro{
             static std::string CreateTokenFromID(userver::storages::postgres::ClusterPtr cluster, const std::int64_t& uid);
             static std::tuple<std::int64_t, std::string> VerifyToken(userver::storages::postgres::ClusterPtr cluster,const std::string& jwt);
             static std::string TryRegistrateAndSend(userver::storages::postgres::ClusterPtr cluster, const std::string& email, const std::string& password);
+            static std::string VerifyRegistration(userver::storages::postgres::ClusterPtr cluster, const std::string& reg_token);
         private:
             static std::string TryRegistrate(userver::storages::postgres::ClusterPtr cluster, const std::string& email, const std::string& password);
             static void SendToEmail(const std::string& where, const std::string& data);
