@@ -40,7 +40,7 @@ std::string PgAuthMaster::CreateTokenFromID(
 std::tuple<std::int64_t, std::string> PgAuthMaster::VerifyToken(
     userver::storages::postgres::ClusterPtr cluster, const std::string& jwt) {
   std::int64_t uid = -1;
-  auto dataGetter = [&cluster, &uid](const std::int64_t& token_id) {
+  auto dataGetter = [&cluster, &uid](const std::int64_t& token_id) -> std::string{
     namespace uPGN = userver::storages::postgres;
     auto transactionR = CreateTransactionRpRead(cluster);
     const uPGN::Query tokenGetterQuery{
