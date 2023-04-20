@@ -34,12 +34,27 @@ add_library(${PROJECT_NAME}_objs OBJECT
     src/hello.hpp
     src/hello.cpp
 )
-target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-core userver-postgresql)
+target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-core userver-postgresql userver-grpc)
 
+
+#The proto get
+include(GrpcTargets)
+add_grpc_library(${PROJECT_NAME}_proto PROTOS AuthServ.proto)
+
+
+#GRPC server impl
+add_library(${PROJECT_NAME}_grpc OBJECT
+    src/AuthGRPC.hpp
+    src/AuthGRPC.cpp
+)
+target_link_libraries(${PROJECT_NAME}_grpc PUBLIC ${PROJECT_NAME}_proto)
+target_link_libraries(${PROJECT_NAME}_grpc PRIVATE ${PROJECT_NAME}_pgAuth userver-core userver-postgresql )
 
 # The Service
 add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_proto ${PROJECT_NAME}_grpc)
+
 
 
 # Unit Tests

@@ -173,10 +173,11 @@ std::string PgAuthMaster::VerifyRegistration(
       return transRes.AsSingleRow<std::string>();
     }
     else{
-      return "Uncorrect registration data";
+      throw std::invalid_argument("Uncorrect registration data");
     } //такой ситуации не будет
   } catch (std::exception& e) {
     return e.what();
+    throw e;
   }
 }
 }  // namespace MyMicro
