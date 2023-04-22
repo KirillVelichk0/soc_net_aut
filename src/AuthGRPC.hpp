@@ -3,9 +3,8 @@
 #include <utility>
 
 #include <fmt/format.h>
-
-#include <AuthServ_service.usrv.pb.hpp>
 #include <userver/components/component.hpp>
+#include <AuthServ_service.usrv.pb.hpp>
 #include <userver/components/loggable_component_base.hpp>
 #include <userver/components/minimal_server_component_list.hpp>
 #include <userver/server/handlers/http_handler_base.hpp>
@@ -33,6 +32,9 @@ class AuthGrpcComponent final : public AuthAndRegistServiceBase::Component {
   void TryRegistr(TryRegistrCall& call, RegistrationInput&& request) override;
   void TryVerifRegistr(TryVerifRegistrCall& call,
                        RegistrationVerificationInput&& request) override;
+  void AuthFromPassword(
+      AuthFromPasswordCall& call,
+      ::PasswordAuthInput&& request) override;
 
  private:
   storages::postgres::ClusterPtr pg_cluster_;

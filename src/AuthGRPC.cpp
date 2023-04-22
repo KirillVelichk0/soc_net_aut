@@ -35,3 +35,21 @@ void AuthGrpcComponent::TryVerifRegistr(
         }
         call.Finish(grpc_response);
     }
+void AuthGrpcComponent::AuthFromPassword(
+      AuthFromPasswordCall& call,
+      ::PasswordAuthInput&& request){
+        PasswordAuthResult grpc_response;
+        grpc_response.set_jwttoken("");
+        try{
+            auto jwt = MyMicro::PgAuthMaster::AuthFromPassword(this->pg_cluster_, request.email(), request.password());
+            grpc_response.set_jwttoken(jwt);
+            grpc_response.set_responcemessage("All ok");
+        }
+        catch(std::bad_optional_access& e){
+            grpc_response.set_responcemessage("Sorry, some internal problems");
+        }
+        catch(std::exception& e){
+            grpc_response.set_responcemessage(e.what());
+        }
+        call.Finish(grpc_response);
+      }
