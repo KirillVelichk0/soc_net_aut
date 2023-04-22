@@ -145,6 +145,37 @@ std::string PgAuthMaster::TryRegistrateAndSend(
     throw er;
   }
 }
+std::string PgAuthMaster::AuthFromPassword(userver::storages::postgres::ClusterPtr cluster, const std::string& email, const std::string& password){
+    namespace uPGN = userver::storages::postgres;
+    auto transactionR = CreateTransactionRpRead(cluster);
+    const uPGN::Query authDataGetterQuery{
+        "SELECT uid, pass_h, salt from users_main_table WHERE email == $1",
+        uPGN::Query::Name{"authQ"},
+    };
+    auto transRes = transactionR.Execute(authDataGetterQuery, email);
+    transactionR.Commit();
+    if(!transRes.IsEmpty()){
+      auto row = transRes[0];
+      auto uid= row["uid"].As<std::int64_t>();
+      auto pass_h = row["pass_h"].As<std::string>();
+      auto salt = row["salt"].As<std::string>();
+      auto pass_h_calced = CryptMaster::SCryptHash(password, salt);
+      if(pass_h_calced.has_value()){
+        if(pass_h_calced.value() == pass_h){
+          return PgAuthMaster::CreateTokenFromID(cluster, uid);
+        }
+        else{
+          throw std::invalid_argument("Uncorrect login or password");
+        }
+      }
+      else{
+        throw std::bad_optional_access();
+      }
+    }
+    else{
+      throw std::runtime_error("There is no account with current email");
+    }
+}
 std::string PgAuthMaster::VerifyRegistration(
     userver::storages::postgres::ClusterPtr cluster,
     const std::string_view reg_token) {

@@ -31,6 +31,19 @@ components_manager:
                     file_path: '@stderr'
                     level: $logger-level
                     overflow_behavior: discard  # Drop logs if the system is too busy to write them down.
+        AuthDatabase:
+            dbconnection: 'postgresql://testsuite@localhost:15433/postgres'
+            blocking_task_processor: fs-task-processor
+            dns_resolver: async
+
+        grpc-server:
+            # The single listening port for incoming RPCs
+            port: 8091
+ 
+        # Our GreeterService implementation
+        AuthGrpcComponent:
+            task-processor: main-task-processor
+            greeting-prefix: Hello
 
         tracer:                              # Component that helps to trace execution times and requests in logs.
             service-name: soc_net_aut   # "You know. You all know exactly who I am. Say my name. " (c)
