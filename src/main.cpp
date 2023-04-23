@@ -6,7 +6,8 @@
 #include <userver/server/handlers/tests_control.hpp>
 #include <userver/testsuite/testsuite_support.hpp>
 #include <userver/utils/daemon_run.hpp>
-
+#include <userver/storages/secdist/component.hpp>
+#include <userver/storages/secdist/provider_component.hpp>
 
 
 #include "hello.hpp"
@@ -17,6 +18,8 @@ int main(int argc, char* argv[]) {
                             .Append<userver::ugrpc::server::ServerComponent>()
                             .Append<userver::server::handlers::Ping>()
                             .Append<userver::components::TestsuiteSupport>()
+                            .Append<userver::components::Secdist>()
+                            .Append<userver::components::DefaultSecdistProvider>()
                             .Append<userver::components::HttpClient>()
                             .Append<userver::server::handlers::TestsControl>();
 

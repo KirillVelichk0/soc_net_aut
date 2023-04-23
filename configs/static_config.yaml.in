@@ -31,8 +31,15 @@ components_manager:
                     file_path: '@stderr'
                     level: $logger-level
                     overflow_behavior: discard  # Drop logs if the system is too busy to write them down.
+
+        secdist: {}
+        default-secdist-provider:
+            config: $secdist-path
+
+            
         AuthDatabase:
-            dbconnection: 'postgresql://testsuite@localhost:15433/soc_net_auth_3c'
+            dbalias: soc_net_auth_3c
+            #dbconnection: 'postgresql://testsuite@localhost:15433/soc_net_auth_3c'
             blocking_task_processor: fs-task-processor
             dns_resolver: async
 

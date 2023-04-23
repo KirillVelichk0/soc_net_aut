@@ -5,5 +5,5 @@ logger-level: debug
 is_testing: false
 
 server-port: 8080
-
-dbconnection: 'postgresql://user:password@service-postgres:5432/soc_net_auth_3c'
+secdist-path: /home/houdini/Cpp/soc_net_aut/configs/secure_data.json
+#dbconnection: 'postgresql://user:password@service-postgres:5432/soc_net_auth_3c'
