@@ -20,7 +20,6 @@
 class AuthGrpcComponent final : public AuthAndRegistServiceBase::Component {
  public:
   static constexpr std::string_view kName = "AuthGrpcComponent";
-  storages::postgres::ClusterPtr pg_cluster_;
   AuthGrpcComponent(const components::ComponentConfig& config,
                     const components::ComponentContext& context)
       : AuthAndRegistServiceBase::Component(config, context),

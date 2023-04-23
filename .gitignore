@@ -1,6 +1,7 @@
 __pycache__
 build*
 configs/secdict.json
+configs/secure_data.json
 compile_commands.json
 .cache/
 .ccache/
