@@ -4,6 +4,7 @@
 
 #include <fmt/format.h>
 #include <userver/components/component.hpp>
+#include <userver/components/component_list.hpp>
 #include <AuthServ_service.usrv.pb.hpp>
 #include <userver/components/loggable_component_base.hpp>
 #include <userver/components/minimal_server_component_list.hpp>
@@ -23,7 +24,6 @@ class AuthGrpcComponent final : public AuthAndRegistServiceBase::Component {
   AuthGrpcComponent(const components::ComponentConfig& config,
                     const components::ComponentContext& context)
       : AuthAndRegistServiceBase::Component(config, context),
-        prefix_(config["greeting-prefix"].As<std::string>()),
         pg_cluster_(
             context.FindComponent<components::Postgres>("AuthDatabase")
                 .GetCluster()) {}
@@ -38,5 +38,5 @@ class AuthGrpcComponent final : public AuthAndRegistServiceBase::Component {
 
  private:
   storages::postgres::ClusterPtr pg_cluster_;
-  const std::string prefix_;
 };
+void AppendAuthGrpc(userver::components::ComponentList& component_list);

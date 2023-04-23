@@ -10,7 +10,7 @@
 #include <userver/storages/secdist/provider_component.hpp>
 
 
-#include "hello.hpp"
+#include "AuthGRPC.hpp"
 
 int main(int argc, char* argv[]) {
   auto component_list = userver::components::MinimalServerComponentList()
@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
                             .Append<userver::components::HttpClient>()
                             .Append<userver::server::handlers::TestsControl>();
 
-  soc_net_aut::AppendHello(component_list);
+  AppendAuthGrpc(component_list);
 
   return userver::utils::DaemonMain(argc, argv, component_list);
 }

@@ -1,6 +1,6 @@
 #include "AuthGRPC.hpp"
 #include "pgAuth.hpp"
-
+#include <userver/clients/dns/component.hpp>
 void AuthGrpcComponent::Authenticate(AuthenticateCall& call,
                                      AuthInput&& request) {
   AuthResult grpc_response;
@@ -53,3 +53,9 @@ void AuthGrpcComponent::AuthFromPassword(
         }
         call.Finish(grpc_response);
       }
+
+void AppendAuthGrpc(userver::components::ComponentList& component_list){
+    component_list.Append<AuthGrpcComponent>();
+    component_list.Append<userver::components::Postgres>("AuthDatabase");
+    component_list.Append<userver::clients::dns::Component>();
+}
