@@ -1,4 +1,6 @@
 #include "pgAuth.hpp"
+#include "jwt.hpp"
+#include "cryptCore.hpp"
 #include <algorithm>
 #include <array>
 #include <cstdint>

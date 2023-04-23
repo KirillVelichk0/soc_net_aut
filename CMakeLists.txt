@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 project(soc_net_aut C CXX)
-
+set(CMAKE_CXX_STANDARD 17)
 include(third_party/userver/cmake/SetupEnvironment.cmake)
 include(GNUInstallDirs)
 find_package(OpenSSL REQUIRED)
@@ -16,20 +16,18 @@ add_library( libScrypt SHARED IMPORTED )
 set_target_properties( libScrypt PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/third_party/libScrypt/libscrypt.so.0)
 target_link_libraries(${PROJECT_NAME}_crypto PRIVATE libScrypt)
 target_include_directories(${PROJECT_NAME}_crypto PUBLIC ${OpenSSL_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME}_crypto PUBLIC ${OpenSSL_LIBRARIES} userver-core)
+target_link_libraries(${PROJECT_NAME}_crypto PRIVATE ${OpenSSL_LIBRARIES} userver-core)
 add_library(${PROJECT_NAME}_jwtTok OBJECT
     src/jwt.hpp
     src/jwt.cpp
     )
-target_include_directories(${PROJECT_NAME}_jwtTok PRIVATE ${OpenSSL_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME}_jwtTok PRIVATE ${OpenSSL_LIBRARIES} ${PROJECT_NAME}_crypto)
-target_link_libraries(${PROJECT_NAME}_jwtTok PUBLIC userver-core)
+target_link_libraries(${PROJECT_NAME}_jwtTok PUBLIC ${PROJECT_NAME}_crypto)
+target_link_libraries(${PROJECT_NAME}_jwtTok PRIVATE userver-core)
 add_library(${PROJECT_NAME}_pgAuth OBJECT
     src/pgAuth.hpp
     src/pgAuth.cpp
 )
-target_link_libraries(${PROJECT_NAME}_pgAuth PRIVATE ${PROJECT_NAME}_crypto ${PROJECT_NAME}_jwtTok)
-target_link_libraries(${PROJECT_NAME}_pgAuth PUBLIC userver-core userver-postgresql )
+target_link_libraries(${PROJECT_NAME}_pgAuth PRIVATE ${PROJECT_NAME}_jwtTok ${PROJECT_NAME}_crypto userver-core userver-postgresql)
 add_library(${PROJECT_NAME}_objs OBJECT
     src/hello.hpp
     src/hello.cpp
@@ -48,12 +46,14 @@ add_library(${PROJECT_NAME}_grpc OBJECT
     src/AuthGRPC.cpp
 )
 target_link_libraries(${PROJECT_NAME}_grpc PUBLIC ${PROJECT_NAME}_proto)
-target_link_libraries(${PROJECT_NAME}_grpc PRIVATE ${PROJECT_NAME}_pgAuth userver-core userver-postgresql )
+target_link_libraries(${PROJECT_NAME}_grpc PRIVATE ${PROJECT_NAME}_pgAuth userver-core userver-postgresql userver-grpc)
+
+
 
 # The Service
 add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_proto ${PROJECT_NAME}_grpc)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_grpc ${PROJECT_NAME}_pgAuth ${PROJECT_NAME}_jwtTok ${PROJECT_NAME}_crypto userver-core userver-postgresql userver-grpc)
+
 
 
 

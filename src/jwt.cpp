@@ -1,6 +1,4 @@
 #include "jwt.hpp"
-#include <openssl/pem.h>
-#include <openssl/rsa.h>
 #include <sstream>
 #include <algorithm>
 #include <userver/crypto/exception.hpp>
