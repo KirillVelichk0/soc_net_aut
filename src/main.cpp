@@ -14,7 +14,6 @@
 
 int main(int argc, char* argv[]) {
   auto component_list = userver::components::MinimalServerComponentList()
-                            .Append<userver::ugrpc::client::ClientFactoryComponent>()
                             .Append<userver::ugrpc::server::ServerComponent>()
                             .Append<userver::server::handlers::Ping>()
                             .Append<userver::components::TestsuiteSupport>()

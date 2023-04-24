@@ -21,9 +21,9 @@ SET row_security = off;
 --
 
 -- *not* creating schema, since initdb creates it
+DROP SCHEMA IF EXISTS public CASCADE;
 
-
-ALTER SCHEMA public OWNER TO postgres;
+CREATE SCHEMA IF NOT EXISTS public;
 
 --
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres

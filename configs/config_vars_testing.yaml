@@ -1,10 +1,14 @@
 worker-threads: 4
 worker-fs-threads: 2
+worker-grpc-threads: 2
 logger-level: debug
 
 is_testing: true
 
 server-port: 8080
+server-grpc-port: 8081
+
+hello-endpoint: '[::1]:8081'
 secdist-path: /home/houdini/Cpp/soc_net_aut/configs/secure_data.json
-# soc_net_aut_db-1 is the service name + _ + filename of the db-1.sql
-#dbconnection: 'postgresql://testsuite@localhost:15433/soc_net_auth_3c'
+# soc_net_aut_auth_db is the service name + _ + filename of the auth_db.sql
+dbconnection: 'postgresql://testsuite@localhost:15433/soc_net_aut_auth_db'
