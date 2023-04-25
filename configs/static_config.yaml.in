@@ -36,9 +36,9 @@ components_manager:
                     level: $logger-level
                     overflow_behavior: discard  # Drop logs if the system is too busy to write them down.
 
-        #secdist: {}
-        #default-secdist-provider:
-            #config: $secdist-path
+        secdist: {}
+        default-secdist-provider:
+            config: $secdist-path
 
             
         AuthDatabase:
@@ -55,7 +55,6 @@ components_manager:
         # Our GreeterService implementation
         AuthGrpcComponent:
             task-processor: grpc-blocking-task-processor
-            greeting-prefix: Hello
 
         tracer:                              # Component that helps to trace execution times and requests in logs.
             service-name: soc_net_aut   # "You know. You all know exactly who I am. Say my name. " (c)

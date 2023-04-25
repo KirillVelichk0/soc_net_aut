@@ -53,7 +53,7 @@ def mock_grpc_server(mock_grpc_hello_session):
 def _prepare_service_config(grpc_mockserver_endpoint):
     def patch_config(config, config_vars):
         components = config['components_manager']['components']
-        components['hello-client']['endpoint'] = grpc_mockserver_endpoint
+        #components['hello-client']['endpoint'] = grpc_mockserver_endpoint
 
     return patch_config
 

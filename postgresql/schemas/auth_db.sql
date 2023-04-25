@@ -1,5 +1,5 @@
 --
--- PostgreSQL database dump
+-- testsuiteQL database dump
 --
 
 -- Dumped from database version 15.2
@@ -17,7 +17,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+-- Name: public; Type: SCHEMA; Schema: -; Owner: testsuite
 --
 
 -- *not* creating schema, since initdb creates it
@@ -26,14 +26,14 @@ DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA IF NOT EXISTS public;
 
 --
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: testsuite
 --
 
 COMMENT ON SCHEMA public IS '';
 
 
 --
--- Name: delete_old_preusers_func(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: delete_old_preusers_func(); Type: FUNCTION; Schema: public; Owner: testsuite
 --
 
 CREATE FUNCTION public.delete_old_preusers_func() RETURNS trigger
@@ -46,10 +46,10 @@ return new;
 END; $$;
 
 
-ALTER FUNCTION public.delete_old_preusers_func() OWNER TO postgres;
+--ALTER FUNCTION public.delete_old_preusers_func() OWNER TO testsuite;
 
 --
--- Name: deleteoldtokensfunc(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: deleteoldtokensfunc(); Type: FUNCTION; Schema: public; Owner: testsuite
 --
 
 CREATE FUNCTION public.deleteoldtokensfunc() RETURNS trigger
@@ -62,10 +62,10 @@ return NEW;
 END; $$;
 
 
-ALTER FUNCTION public.deleteoldtokensfunc() OWNER TO postgres;
+--ALTER FUNCTION public.deleteoldtokensfunc() OWNER TO testsuite;
 
 --
--- Name: insert_token(bigint, bigint, text); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: insert_token(bigint, bigint, text); Type: FUNCTION; Schema: public; Owner: testsuite
 --
 
 CREATE FUNCTION public.insert_token("uidP" bigint, "time_limitP" bigint, "open_keyP" text) RETURNS bigint
@@ -83,10 +83,10 @@ return tidP;
 end; $$;
 
 
-ALTER FUNCTION public.insert_token("uidP" bigint, "time_limitP" bigint, "open_keyP" text) OWNER TO postgres;
+--ALTER FUNCTION public.insert_token("uidP" bigint, "time_limitP" bigint, "open_keyP" text) OWNER TO testsuite;
 
 --
--- Name: try_register(character varying, character, character, character); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: try_register(character varying, character, character, character); Type: FUNCTION; Schema: public; Owner: testsuite
 --
 
 CREATE FUNCTION public.try_register(emailp character varying, pass_hp character, saltp character, verifp character) RETURNS bigint
@@ -110,10 +110,10 @@ end if;
 END; $$;
 
 
-ALTER FUNCTION public.try_register(emailp character varying, pass_hp character, saltp character, verifp character) OWNER TO postgres;
+--ALTER FUNCTION public.try_register(emailp character varying, pass_hp character, saltp character, verifp character) OWNER TO testsuite;
 
 --
--- Name: try_verify(bigint, character); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: try_verify(bigint, character); Type: FUNCTION; Schema: public; Owner: testsuite
 --
 
 CREATE FUNCTION public.try_verify(idp bigint, verifp character) RETURNS character varying
@@ -154,14 +154,14 @@ end if;
 END; $$;
 
 
-ALTER FUNCTION public.try_verify(idp bigint, verifp character) OWNER TO postgres;
+--ALTER FUNCTION public.try_verify(idp bigint, verifp character) OWNER TO testsuite;
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: users_main_table; Type: TABLE; Schema: public; Owner: postgres
+-- Name: users_main_table; Type: TABLE; Schema: public; Owner: testsuite
 --
 
 CREATE TABLE public.users_main_table (
@@ -172,10 +172,10 @@ CREATE TABLE public.users_main_table (
 );
 
 
-ALTER TABLE public.users_main_table OWNER TO postgres;
+--ALTER TABLE public.users_main_table OWNER TO testsuite;
 
 --
--- Name: users_main_table_uid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: users_main_table_uid_seq; Type: SEQUENCE; Schema: public; Owner: testsuite
 --
 
 CREATE SEQUENCE public.users_main_table_uid_seq
@@ -186,17 +186,17 @@ CREATE SEQUENCE public.users_main_table_uid_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_main_table_uid_seq OWNER TO postgres;
+--ALTER TABLE public.users_main_table_uid_seq OWNER TO testsuite;
 
 --
--- Name: users_main_table_uid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: users_main_table_uid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: testsuite
 --
 
 ALTER SEQUENCE public.users_main_table_uid_seq OWNED BY public.users_main_table.uid;
 
 
 --
--- Name: users_second_table; Type: TABLE; Schema: public; Owner: postgres
+-- Name: users_second_table; Type: TABLE; Schema: public; Owner: testsuite
 --
 
 CREATE TABLE public.users_second_table (
@@ -209,10 +209,10 @@ CREATE TABLE public.users_second_table (
 );
 
 
-ALTER TABLE public.users_second_table OWNER TO postgres;
+ALTER TABLE public.users_second_table OWNER TO testsuite;
 
 --
--- Name: users_second_table_uid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: users_second_table_uid_seq; Type: SEQUENCE; Schema: public; Owner: testsuite
 --
 
 CREATE SEQUENCE public.users_second_table_uid_seq
@@ -223,17 +223,17 @@ CREATE SEQUENCE public.users_second_table_uid_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_second_table_uid_seq OWNER TO postgres;
+ALTER TABLE public.users_second_table_uid_seq OWNER TO testsuite;
 
 --
--- Name: users_second_table_uid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: users_second_table_uid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: testsuite
 --
 
 ALTER SEQUENCE public.users_second_table_uid_seq OWNED BY public.users_second_table.uid;
 
 
 --
--- Name: users_tokens_info; Type: TABLE; Schema: public; Owner: postgres
+-- Name: users_tokens_info; Type: TABLE; Schema: public; Owner: testsuite
 --
 
 CREATE TABLE public.users_tokens_info (
@@ -244,10 +244,10 @@ CREATE TABLE public.users_tokens_info (
 );
 
 
-ALTER TABLE public.users_tokens_info OWNER TO postgres;
+ALTER TABLE public.users_tokens_info OWNER TO testsuite;
 
 --
--- Name: users_tokens_info_tid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: users_tokens_info_tid_seq; Type: SEQUENCE; Schema: public; Owner: testsuite
 --
 
 CREATE SEQUENCE public.users_tokens_info_tid_seq
@@ -258,38 +258,38 @@ CREATE SEQUENCE public.users_tokens_info_tid_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_tokens_info_tid_seq OWNER TO postgres;
+ALTER TABLE public.users_tokens_info_tid_seq OWNER TO testsuite;
 
 --
--- Name: users_tokens_info_tid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: users_tokens_info_tid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: testsuite
 --
 
 ALTER SEQUENCE public.users_tokens_info_tid_seq OWNED BY public.users_tokens_info.tid;
 
 
 --
--- Name: users_main_table uid; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: users_main_table uid; Type: DEFAULT; Schema: public; Owner: testsuite
 --
 
 ALTER TABLE ONLY public.users_main_table ALTER COLUMN uid SET DEFAULT nextval('public.users_main_table_uid_seq'::regclass);
 
 
 --
--- Name: users_second_table uid; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: users_second_table uid; Type: DEFAULT; Schema: public; Owner: testsuite
 --
 
 ALTER TABLE ONLY public.users_second_table ALTER COLUMN uid SET DEFAULT nextval('public.users_second_table_uid_seq'::regclass);
 
 
 --
--- Name: users_tokens_info tid; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: users_tokens_info tid; Type: DEFAULT; Schema: public; Owner: testsuite
 --
 
 ALTER TABLE ONLY public.users_tokens_info ALTER COLUMN tid SET DEFAULT nextval('public.users_tokens_info_tid_seq'::regclass);
 
 
 --
--- Name: users_main_table users_main_table_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users_main_table users_main_table_email_key; Type: CONSTRAINT; Schema: public; Owner: testsuite
 --
 
 ALTER TABLE ONLY public.users_main_table
@@ -297,7 +297,7 @@ ALTER TABLE ONLY public.users_main_table
 
 
 --
--- Name: users_main_table users_main_table_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users_main_table users_main_table_pkey; Type: CONSTRAINT; Schema: public; Owner: testsuite
 --
 
 ALTER TABLE ONLY public.users_main_table
@@ -305,7 +305,7 @@ ALTER TABLE ONLY public.users_main_table
 
 
 --
--- Name: users_second_table users_second_table_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users_second_table users_second_table_pkey; Type: CONSTRAINT; Schema: public; Owner: testsuite
 --
 
 ALTER TABLE ONLY public.users_second_table
@@ -313,7 +313,7 @@ ALTER TABLE ONLY public.users_second_table
 
 
 --
--- Name: users_tokens_info users_tokens_info_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users_tokens_info users_tokens_info_pkey; Type: CONSTRAINT; Schema: public; Owner: testsuite
 --
 
 ALTER TABLE ONLY public.users_tokens_info
@@ -321,49 +321,49 @@ ALTER TABLE ONLY public.users_tokens_info
 
 
 --
--- Name: email_i; Type: INDEX; Schema: public; Owner: postgres
+-- Name: email_i; Type: INDEX; Schema: public; Owner: testsuite
 --
 
 CREATE UNIQUE INDEX email_i ON public.users_main_table USING btree (email);
 
 
 --
--- Name: email_si; Type: INDEX; Schema: public; Owner: postgres
+-- Name: email_si; Type: INDEX; Schema: public; Owner: testsuite
 --
 
 CREATE INDEX email_si ON public.users_second_table USING btree (email);
 
 
 --
--- Name: max_tsi; Type: INDEX; Schema: public; Owner: postgres
+-- Name: max_tsi; Type: INDEX; Schema: public; Owner: testsuite
 --
 
 CREATE INDEX max_tsi ON public.users_second_table USING btree (max_ts);
 
 
 --
--- Name: tokenlimi; Type: INDEX; Schema: public; Owner: postgres
+-- Name: tokenlimi; Type: INDEX; Schema: public; Owner: testsuite
 --
 
 CREATE INDEX tokenlimi ON public.users_tokens_info USING btree (time_limit);
 
 
 --
--- Name: users_second_table delete_old_preusers; Type: TRIGGER; Schema: public; Owner: postgres
+-- Name: users_second_table delete_old_preusers; Type: TRIGGER; Schema: public; Owner: testsuite
 --
 
 CREATE TRIGGER delete_old_preusers AFTER INSERT ON public.users_second_table FOR EACH STATEMENT EXECUTE FUNCTION public.delete_old_preusers_func();
 
 
 --
--- Name: users_tokens_info deleteoldtokens; Type: TRIGGER; Schema: public; Owner: postgres
+-- Name: users_tokens_info deleteoldtokens; Type: TRIGGER; Schema: public; Owner: testsuite
 --
 
 CREATE TRIGGER deleteoldtokens AFTER INSERT ON public.users_tokens_info FOR EACH STATEMENT EXECUTE FUNCTION public.deleteoldtokensfunc();
 
 
 --
--- Name: users_tokens_info users_tokens_info_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users_tokens_info users_tokens_info_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: testsuite
 --
 
 ALTER TABLE ONLY public.users_tokens_info
@@ -371,12 +371,12 @@ ALTER TABLE ONLY public.users_tokens_info
 
 
 --
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: testsuite
 --
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
 --
--- PostgreSQL database dump complete
+-- testsuiteQL database dump complete
 --
