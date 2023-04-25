@@ -17,7 +17,7 @@ components_manager:
             thread_name: fs-worker
             worker_threads: $worker-fs-threads
 
-        fs-task-processor:            # Make a separate task processor for filesystem bound tasks.
+        grpc-blocking-task-processor:            # Make a separate task processor for filesystem bound tasks.
             thread_name: fs-worker
             worker_threads: $worker-fs-threads
 
