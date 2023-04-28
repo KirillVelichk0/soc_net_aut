@@ -94,12 +94,15 @@ std::string PgAuthMaster::TryRegistrate(
   };
   auto saltS = arrayToStringConverter(salt);
   auto verifPS = arrayToStringConverter(verifP);
+  auto saltedPassBsUrl = MyMicro::CryptMaster::Base64UrlEndoce(saltedPass.value());
+  auto saltBsUrl = MyMicro::CryptMaster::Base64UrlEndoce(saltS);
+  auto verifBsUrl = MyMicro::CryptMaster::Base64UrlEndoce(verifPS);
   auto transRes = transactionR.Execute(registratorQuery, email,
-                                       saltedPass.value(), saltS, verifPS);
+                                       saltedPassBsUrl, saltBsUrl, verifBsUrl);
   transactionR.Commit();
   if (!transRes.IsEmpty()) {
     auto regData = std::to_string(transRes.AsSingleRow<std::int64_t>());
-    regData += "."s + CryptMaster::Base64UrlEndoce(verifPS);
+    regData += "."s + verifBsUrl;
     return regData;
 
   } else {
@@ -159,8 +162,10 @@ std::string PgAuthMaster::AuthFromPassword(userver::storages::postgres::ClusterP
     if(!transRes.IsEmpty()){
       auto row = transRes[0];
       auto uid= row["uid"].As<std::int64_t>();
-      auto pass_h = row["pass_h"].As<std::string>();
-      auto salt = row["salt"].As<std::string>();
+      auto pass_h_Url = row["pass_h"].As<std::string>();
+      auto saltUrl = row["salt"].As<std::string>();
+      auto pass_h = CryptMaster::Base64UrlDecodeWithCheck(pass_h_Url);
+      auto salt = CryptMaster::Base64UrlDecodeWithCheck(saltUrl);
       auto pass_h_calced = CryptMaster::SCryptHash(password, salt);
       if(pass_h_calced.has_value()){
         if(pass_h_calced.value() == pass_h){
@@ -188,11 +193,9 @@ std::string PgAuthMaster::VerifyRegistration(
     if (it == reg_token.cend()) {
       throw std::invalid_argument("Uncorrect token");
     }
-    auto to_view_my = [](std::string_view::const_iterator first, std::string_view::const_iterator last) -> std::string_view{
-      return first != last ? std::string_view{ first, last - first } : std::string_view{ nullptr, 0 };
-    };
-    randomTokenData = CryptMaster::Base64UrlDecodeWithCheck(
-        to_view_my(it, reg_token.cend()));
+    std::istringstream istr(std::string(reg_token.cbegin(), it));
+    istr >> u_id;
+    randomTokenData = std::string(it, reg_token.cend());
     namespace uPGN = userver::storages::postgres;
     auto transactionR = CreateTransactionRpRead(cluster);
     const uPGN::Query verifingQuery{

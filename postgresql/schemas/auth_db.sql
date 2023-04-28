@@ -121,9 +121,9 @@ CREATE FUNCTION public.try_verify(idp bigint, verifp character) RETURNS characte
     AS $$
 DECLARE
 emailV varchar(32);
-verifV char(32);
-passV char(32);
-saltV char(32);
+verifV char(44);
+passV char(44);
+saltV char(44);
 maxV timestamptz;
 is_exists bool;
 is_uncorrect bool;
@@ -167,8 +167,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.users_main_table (
     uid bigint NOT NULL,
     email character varying(32),
-    pass_h character(32),
-    salt character(32)
+    pass_h character(44),
+    salt character(44)
 );
 
 
@@ -202,9 +202,9 @@ ALTER SEQUENCE public.users_main_table_uid_seq OWNED BY public.users_main_table.
 CREATE TABLE public.users_second_table (
     uid bigint NOT NULL,
     email character varying(32),
-    pass_h character(32),
-    salt character(32),
-    verif character(32),
+    pass_h character(44),
+    salt character(44),
+    verif character(44),
     max_ts timestamp with time zone
 );
 
