@@ -43,7 +43,7 @@ components_manager:
             
         AuthDatabase:
             #dbalias: soc_net_auth_3c
-            dbconnection: 'postgresql://testsuite@localhost:15433/soc_net_auth_auth_db'
+            dbconnection: $connection_to_pg
             blocking_task_processor: fs-task-processor
             dns_resolver: async
 

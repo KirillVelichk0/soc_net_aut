@@ -11,4 +11,4 @@ server-grpc-port: 8081
 hello-endpoint: '[::1]:8081'
 secdist-path: /home/houdini/Cpp/soc_net_aut/configs/secure_data.json
 # soc_net_aut_auth_db is the service name + _ + filename of the auth_db.sql
-dbconnection: 'postgresql://testsuite@localhost:15433/soc_net_aut_auth_db'
+connection_to_pg: 'postgresql://testsuite@localhost:15433/soc_net_aut_auth_db'

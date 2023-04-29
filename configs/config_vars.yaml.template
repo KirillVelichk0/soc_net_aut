@@ -9,5 +9,5 @@ server-port: 8080
 server-grpc-port: 8081
 
 hello-endpoint: '[::1]:8081'
-secdist-path: /home/houdini/Cpp/soc_net_aut/configs/secure_data.json
-#dbconnection: 'postgresql://soc_net_aut_user:password@localhost:5432/soc_net_auth_3c'
+#secdist-path: /home/houdini/Cpp/soc_net_aut/configs/secure_data.json
+connection_to_pg: 'postgresql://soc_net_aut_user:password@localhost:5432/soc_net_auth_3c'
